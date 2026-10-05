@@ -1,0 +1,42 @@
+# AgentCore Runtime configuration
+# [U] — verify: exact YAML schema for bedrock-agentcore-starter-toolkit against
+# `agentcore configure` output on your account (W-34).
+#
+# IMPORTANT: networkMode MUST be VPC if the agent writes directly to a private
+# PostgreSQL/RDS instance (NAIE DB). PUBLIC mode has no route to it [D-30].
+
+agent_runtime:
+  name: agent-tokenomics
+  description: "Generic agent tokenomics capture — Bedrock AgentCore Runtime"
+  # Port 8080 is required by AgentCore Runtime [D-26]
+  port: 8080
+  # VPC mode is required to reach a private PostgreSQL (NAIE DB) [D-30]
+  networkMode: VPC
+  vpcConfig:
+    # Replace with your subnet IDs and security group IDs
+    subnetIds:
+      - subnet-REPLACE_ME
+    securityGroupIds:
+      - sg-REPLACE_ME
+  # IAM execution role ARN created from execution-role-policy.json
+  executionRoleArn: arn:aws:iam::ACCOUNT_ID:role/AgentCoreTokenomicsExecutionRole
+  environmentVariables:
+    # ---- AWS ----
+    AWS_REGION: "us-east-1"
+    # ---- Bedrock model ----
+    BEDROCK_MODEL_ID: "anthropic.claude-3-haiku-20240307-v1:0"
+    # ---- persistence ----
+    PERSISTENCE_BACKEND: "postgresql"
+    NAIE_DB_DSN: ""           # Set to your PostgreSQL DSN; inject via Secrets Manager in prod
+    # ---- tagging ----
+    TOKENOMICS_APP: "my-agent-app"
+    TOKENOMICS_TEAM: "my-team"
+    # ---- tuning (defaults are usually fine) ----
+    TOKENOMICS_BATCH_SIZE: "100"
+    TOKENOMICS_FLUSH_INTERVAL_S: "2.0"
+    # ---- observability ----
+    AGENT_OBSERVABILITY_ENABLED: "true"
+    OTEL_PYTHON_DISTRO: "aws_distro"
+    OTEL_PYTHON_CONFIGURATOR: "aws_configurator"
+  # Container image — push to ECR first
+  containerImage: ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/agent-tokenomics:latest

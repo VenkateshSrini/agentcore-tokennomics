@@ -1,0 +1,41 @@
+# Environment / secrets — never commit
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# uv lock (committed intentionally — remove this line if you want to commit uv.lock)
+# uv.lock
+
+# Test / coverage artefacts
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Local data (JSON Lines output from the json backend)
+data/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# macOS
+.DS_Store
